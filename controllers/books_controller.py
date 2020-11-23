@@ -1,7 +1,7 @@
 from models.Book import Book
 from main import db
 from schemas.BookSchema import book_schema, books_schema
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, abort
 books = Blueprint('books', __name__, url_prefix="/books")
 
 @books.route("/", methods=["GET"])
@@ -14,6 +14,9 @@ def book_index():
 def book_create():
     #Create a new book
     book_fields = book_schema.load(request.json)
+
+    if "title" not in book_fields.keys():
+        return abort(400)
 
     new_book = Book()
     new_book.title = book_fields["title"]
